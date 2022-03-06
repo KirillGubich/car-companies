@@ -1,5 +1,8 @@
 import 'package:cars_catalog/model/company.dart';
+import 'package:cars_catalog/model/weather.dart';
 import 'package:flutter/material.dart';
+
+import '../model/location.dart';
 
 class CatalogView extends StatefulWidget {
   const CatalogView({Key? key}) : super(key: key);
@@ -9,12 +12,17 @@ class CatalogView extends StatefulWidget {
 }
 
 class _CatalogViewState extends State<CatalogView> {
-
   final _companies = <Company>[
-    Company("Audi",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/300px-Audi-Logo_2016.svg.png"),
-    Company("BMW",
-        "https://avatars.mds.yandex.net/i?id=5a429518e1b970b0377049bebeb955b4-5904855-images-thumbs&n=13"),
+    Company(
+        "Audi",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/300px-Audi-Logo_2016.svg.png",
+        Weather(24, "Cloudy"),
+        Location(50, 50)),
+    Company(
+        "BMW",
+        "https://avatars.mds.yandex.net/i?id=5a429518e1b970b0377049bebeb955b4-5904855-images-thumbs&n=13",
+        Weather(12, "Rain"),
+        Location(40, 60)),
   ];
   final _biggerFont = const TextStyle(fontSize: 20);
 
@@ -44,14 +52,19 @@ class _CatalogViewState extends State<CatalogView> {
   Widget _buildRow(Company company) {
     return ListTile(
       title: Text(
-        company.name,
+        company.name +
+            " (" +
+            company.weather.temperature.toString() +
+            "℃, " +
+            company.weather.type +
+            ")\n" +
+            company.location.latitude.toStringAsFixed(1) +
+            "°, " +
+            company.location.longitude.toStringAsFixed(1) +
+            "°",
         style: _biggerFont,
       ),
-      trailing: Image.network(
-          company.imageUrl,
-          width: 100,
-          height: 100
-      ),
+      trailing: Image.network(company.imageUrl, width: 100, height: 100),
     );
   }
 }
