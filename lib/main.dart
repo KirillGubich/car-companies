@@ -41,23 +41,24 @@ class _NavigationBarState extends State<NavigationBar> {
     return Scaffold(
       body: screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.green[700],
         currentIndex: currentIndex,
         onTap: (index) => setState(() => currentIndex = index),
-        items: const [
+        items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.list),
+              icon: const Icon(Icons.list),
             label: "Catalog",
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.green[700],
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
+            icon: const Icon(Icons.map),
             label: "Map",
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.green[700],
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             label: "Settings",
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.green[700],
           ),
         ],
       ),

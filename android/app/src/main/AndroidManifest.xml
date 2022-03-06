@@ -4,7 +4,12 @@
         android:label="cars_catalog"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <activity
+
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyBOxd0RkR-4adJcL-W0ELYiCGkMEVxSChk"/>
+
+
+       <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
