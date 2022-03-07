@@ -1,5 +1,7 @@
+import 'package:cars_catalog/model/app_properties.dart';
 import 'package:cars_catalog/model/company.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../dao/company_dao.dart';
 
@@ -11,12 +13,34 @@ class CatalogView extends StatefulWidget {
 }
 
 class _CatalogViewState extends State<CatalogView> {
-
   final _companies = CompanyDao.readAll();
-  final _biggerFont = const TextStyle(fontSize: 20);
+  double _fontSize = 16;
+  Color _fontColor = Colors.black;
+
+  Future<double> uploadFontSize() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble('fontSize') ?? 16;
+  }
+
+  Future<Color> uploadColor() async {
+    final prefs = await SharedPreferences.getInstance();
+    final index = prefs.getInt("colorIndex") ?? 0;
+    return AppProperties.fontColors[index];
+  }
 
   @override
   Widget build(BuildContext context) {
+    uploadFontSize().then((value) {
+      setState(() {
+        _fontSize = value;
+      });
+    });
+    uploadColor().then((value) {
+      setState(() {
+        _fontColor = value;
+      });
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Catalog'),
@@ -43,16 +67,16 @@ class _CatalogViewState extends State<CatalogView> {
     return ListTile(
       title: Text(
         company.name +
-            " (" +
+            " \n" +
             company.weather.temperature.toString() +
             "℃, " +
             company.weather.type +
-            ")\n" +
+            "\n" +
             company.location.latitude.toStringAsFixed(2) +
             "°, " +
             company.location.longitude.toStringAsFixed(2) +
             "°",
-        style: _biggerFont,
+        style: TextStyle(fontSize: _fontSize, color: _fontColor),
       ),
       trailing: Image.network(company.imageUrl, width: 100, height: 100),
     );

@@ -3,6 +3,8 @@ import 'package:cars_catalog/view/MapView.dart';
 import 'package:cars_catalog/view/SettingsView.dart';
 import 'package:flutter/material.dart';
 
+import 'model/app_properties.dart';
+
 void main() {
   runApp(const MyApp());
 }

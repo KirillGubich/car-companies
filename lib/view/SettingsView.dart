@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../model/app_properties.dart';
+
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
 
@@ -11,23 +13,11 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   double _fontSize = 14;
-  Color _fontColor = Colors.red;
-  int colorIndex = 0;
-  final colors = <Color>[
-    Colors.black,
-    Colors.red,
-    Colors.blue,
-    Colors.green,
-    Colors.yellow,
-    Colors.purple,
-    Colors.orange,
-    Colors.brown
-  ];
+  Color _fontColor = Colors.black;
 
   changeColor(Color color) async {
     setState(() => _fontColor = color);
-    int index = colors.indexOf(color);
-    print(index);
+    int index = AppProperties.fontColors.indexOf(color);
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt("colorIndex", index);
   }
@@ -46,13 +36,11 @@ class _SettingsViewState extends State<SettingsView> {
   Future<Color> uploadColor() async {
     final prefs = await SharedPreferences.getInstance();
     final index = prefs.getInt("colorIndex") ?? 0;
-    print(index);
-    return colors[index];
+    return AppProperties.fontColors[index];
   }
 
   @override
   Widget build(BuildContext context) {
-
     uploadFontSize().then((value) {
       setState(() {
         _fontSize = value;
@@ -64,45 +52,46 @@ class _SettingsViewState extends State<SettingsView> {
       });
     });
 
-
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Settings'),
-          backgroundColor: Colors.green[700],
-        ),
-        body: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Text("Font size",
-                  style: TextStyle(
-                      fontSize: _fontSize,
-                      fontWeight: FontWeight.bold,
-                      color: _fontColor)),
-              SizedBox(
-                height: 80,
-                child: Slider(
-                  value: _fontSize,
-                  min: 12,
-                  max: 30,
-                  divisions: 9,
-                  label: _fontSize.round().toString(),
-                  activeColor: Colors.green[700],
-                  inactiveColor: Colors.green[200],
-                  onChanged: changeFontSize,
-                ),
+      appBar: AppBar(
+        title: const Text('Settings'),
+        backgroundColor: Colors.green[700],
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Text("Font size",
+                style: TextStyle(
+                    fontSize: _fontSize,
+                    fontWeight: FontWeight.bold,
+                    color: _fontColor)),
+            SizedBox(
+              height: 80,
+              child: Slider(
+                value: _fontSize,
+                min: 12,
+                max: 30,
+                divisions: 9,
+                label: _fontSize.round().toString(),
+                activeColor: Colors.green[700],
+                inactiveColor: Colors.green[200],
+                onChanged: changeFontSize,
               ),
-              Text("Font color\n",
-                  style: TextStyle(
-                      fontSize: _fontSize, fontWeight: FontWeight.bold,
-                  color: _fontColor)),
-              BlockPicker(
-                  availableColors: colors,
-                  pickerColor: Colors.white,
-                  onColorChanged: changeColor),
-            ],
-          ),
+            ),
+            const Divider(),
+            Text("Font color\n",
+                style: TextStyle(
+                    fontSize: _fontSize,
+                    fontWeight: FontWeight.bold,
+                    color: _fontColor)),
+            BlockPicker(
+                availableColors: AppProperties.fontColors,
+                pickerColor: Colors.white,
+                onColorChanged: changeColor),
+          ],
         ),
+      ),
     );
   }
 }
