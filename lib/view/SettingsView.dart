@@ -12,11 +12,12 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  double _fontSize = 14;
+  double _fontSize = 20;
   Color _fontColor = Colors.black;
 
   changeColor(Color color) async {
     setState(() => _fontColor = color);
+    AppProperties.fontColor = color;
     int index = AppProperties.fontColors.indexOf(color);
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt("colorIndex", index);
@@ -24,6 +25,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   changeFontSize(double fontSize) async {
     setState(() => _fontSize = fontSize);
+    AppProperties.fontSize = fontSize;
     final prefs = await SharedPreferences.getInstance();
     prefs.setDouble("fontSize", fontSize);
   }
@@ -41,21 +43,14 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    uploadFontSize().then((value) {
-      setState(() {
-        _fontSize = value;
-      });
-    });
-    uploadColor().then((value) {
-      setState(() {
-        _fontColor = value;
-      });
-    });
+
+    _fontSize = AppProperties.fontSize;
+    _fontColor = AppProperties.fontColor;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
-        backgroundColor: Colors.green[700],
+        backgroundColor: AppProperties.titleBarColor,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -74,8 +69,8 @@ class _SettingsViewState extends State<SettingsView> {
                 max: 30,
                 divisions: 9,
                 label: _fontSize.round().toString(),
-                activeColor: Colors.green[700],
-                inactiveColor: Colors.green[200],
+                activeColor: Colors.black,
+                inactiveColor: Colors.black12,
                 onChanged: changeFontSize,
               ),
             ),

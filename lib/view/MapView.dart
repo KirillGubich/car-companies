@@ -2,6 +2,7 @@ import 'package:cars_catalog/dao/company_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../model/app_properties.dart';
 import '../model/company.dart';
 
 class MapView extends StatefulWidget {
@@ -25,7 +26,7 @@ class _MapViewState extends State<MapView> {
                 LatLng(company.location.latitude, company.location.longitude),
             infoWindow: InfoWindow(
               title: company.name,
-              snippet: company.weather.temperature.toString() +
+              snippet: company.weather.temperature.toStringAsFixed(2) +
                   "℃ (" +
                   company.weather.type +
                   "), " +
@@ -47,7 +48,7 @@ class _MapViewState extends State<MapView> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Companies locations'),
-          backgroundColor: Colors.green[700],
+          backgroundColor: AppProperties.titleBarColor,
         ),
         body: GoogleMap(
           onMapCreated: _onMapCreated,

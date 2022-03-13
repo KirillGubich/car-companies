@@ -1,7 +1,6 @@
 import 'package:cars_catalog/model/app_properties.dart';
 import 'package:cars_catalog/model/company.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../dao/company_dao.dart';
 
@@ -13,40 +12,38 @@ class CatalogView extends StatefulWidget {
 }
 
 class _CatalogViewState extends State<CatalogView> {
-  final _companies = CompanyDao.readAll();
-  double _fontSize = 16;
-  Color _fontColor = Colors.black;
+  var _companies = CompanyDao.readAll();
 
-  Future<double> uploadFontSize() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble('fontSize') ?? 16;
-  }
+  @override
+  void initState() {
+    super.initState();
 
-  Future<Color> uploadColor() async {
-    final prefs = await SharedPreferences.getInstance();
-    final index = prefs.getInt("colorIndex") ?? 0;
-    return AppProperties.fontColors[index];
+    CompanyDao.uploadData();
+    AppProperties.updateProperties().then((data) {
+      setState(() {
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    uploadFontSize().then((value) {
-      setState(() {
-        _fontSize = value;
-      });
-    });
-    uploadColor().then((value) {
-      setState(() {
-        _fontColor = value;
-      });
-    });
+
+    Widget scaffoldBody;
+    if (AppProperties.fontSize == 0 || _companies == null) {
+      AppProperties.updateProperties();
+      CompanyDao.uploadData();
+      _companies = CompanyDao.readAll();
+      scaffoldBody = const Text("");
+    } else {
+      scaffoldBody = _buildList();
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Catalog'),
-        backgroundColor: Colors.green[700],
+        backgroundColor: AppProperties.titleBarColor,
       ),
-      body: _buildList(),
+      body: scaffoldBody,
     );
   }
 
@@ -64,11 +61,15 @@ class _CatalogViewState extends State<CatalogView> {
   }
 
   Widget _buildRow(Company company) {
+
+    double _fontSize = AppProperties.fontSize;
+    Color _fontColor = AppProperties.fontColor;
+
     return ListTile(
       title: Text(
         company.name +
             " \n" +
-            company.weather.temperature.toString() +
+            company.weather.temperature.toStringAsFixed(0) +
             "℃, " +
             company.weather.type +
             "\n" +
