@@ -52,9 +52,10 @@ class _MapViewState extends State<MapView> {
         ),
         body: GoogleMap(
           onMapCreated: _onMapCreated,
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(0, 0),
-            zoom: 2,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(AppProperties.mapCenter.latitude,
+                AppProperties.mapCenter.longitude),
+            zoom: AppProperties.mapZoom,
           ),
           markers: _markers.values.toSet(),
         ),

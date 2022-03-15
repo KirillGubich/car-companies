@@ -1,7 +1,4 @@
 import 'package:cars_catalog/model/app_properties.dart';
-import 'package:cars_catalog/view/CatalogView.dart';
-import 'package:cars_catalog/view/MapView.dart';
-import 'package:cars_catalog/view/SettingsView.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,7 +10,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return const MaterialApp(
       title: "Car catalog",
       home: NavigationBar(),
@@ -29,25 +25,17 @@ class NavigationBar extends StatefulWidget {
 }
 
 class _NavigationBarState extends State<NavigationBar> {
-
-  final screens = [
-    const CatalogView(),
-    const MapView(),
-    const SettingsView()
-  ];
-  int currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[currentIndex],
+      body: AppProperties.screens[AppProperties.currentScreen],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.black,
-        currentIndex: currentIndex,
-        onTap: (index) => setState(() => currentIndex = index),
+        currentIndex: AppProperties.currentScreen,
+        onTap: (index) => setState(() => AppProperties.currentScreen = index),
         items: [
           BottomNavigationBarItem(
-              icon: const Icon(Icons.list),
+            icon: const Icon(Icons.list),
             label: "Catalog",
             backgroundColor: AppProperties.navigationBarColor,
           ),
@@ -66,4 +54,3 @@ class _NavigationBarState extends State<NavigationBar> {
     );
   }
 }
-
