@@ -44,6 +44,7 @@ class _CatalogViewState extends State<CatalogView> {
         backgroundColor: AppProperties.titleBarColor,
       ),
       body: scaffoldBody,
+      backgroundColor: AppProperties.viewBackgroundColor,
     );
   }
 
@@ -53,7 +54,7 @@ class _CatalogViewState extends State<CatalogView> {
         itemCount: _companies.length * 2 - 1,
         itemBuilder: (context, i) {
           if (i.isOdd) {
-            return const Divider();
+            return const Divider(color: Colors.black);
           }
           final index = i ~/ 2;
           return _buildRow(_companies[index]);

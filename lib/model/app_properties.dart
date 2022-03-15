@@ -17,6 +17,7 @@ class AppProperties {
   static Color fontColor = Colors.black;
   static Color titleBarColor = Colors.black38;
   static Color navigationBarColor = Colors.red;
+  static Color viewBackgroundColor = const Color.fromRGBO(243, 243, 243, 1);
 
   static Future<void> updateProperties() async {
     final prefs = await SharedPreferences.getInstance();

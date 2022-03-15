@@ -53,6 +53,7 @@ class _SettingsViewState extends State<SettingsView> {
         backgroundColor: AppProperties.titleBarColor,
       ),
       body: Container(
+        color: AppProperties.viewBackgroundColor,
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
