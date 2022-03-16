@@ -14,7 +14,8 @@ class CatalogView extends StatefulWidget {
 }
 
 class _CatalogViewState extends State<CatalogView> {
-  var _companies = CompanyDao.readAll();
+  TextEditingController editingController = TextEditingController();
+  final _companies = <Company>[];
 
   @override
   void initState() {
@@ -28,10 +29,11 @@ class _CatalogViewState extends State<CatalogView> {
   @override
   Widget build(BuildContext context) {
     Widget scaffoldBody;
-    if (AppProperties.fontSize == 0 || _companies == null) {
+    if (AppProperties.fontSize == 0 || _companies.isEmpty) {
       AppProperties.updateProperties();
       CompanyDao.uploadData();
-      _companies = CompanyDao.readAll();
+      _companies.clear();
+      _companies.addAll(CompanyDao.readAll());
       scaffoldBody = const Text("");
     } else {
       scaffoldBody = _buildList();
@@ -42,7 +44,27 @@ class _CatalogViewState extends State<CatalogView> {
         title: const Text('Catalog'),
         backgroundColor: AppProperties.titleBarColor,
       ),
-      body: scaffoldBody,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: TextField(
+              onChanged: (value) {
+                filterSearchResults(value);
+              },
+              controller: editingController,
+              decoration: const InputDecoration(
+                  hintText: "Search",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+            ),
+          ),
+          Expanded(
+            child: scaffoldBody,
+          ),
+        ],
+      ),
       backgroundColor: AppProperties.viewBackgroundColor,
     );
   }
@@ -53,7 +75,7 @@ class _CatalogViewState extends State<CatalogView> {
         itemCount: _companies.length * 2 - 1,
         itemBuilder: (context, i) {
           if (i.isOdd) {
-            return const Divider(color: Colors.black);
+            return const Divider(color: Colors.black, thickness: 1);
           }
           final index = i ~/ 2;
           return _buildRow(_companies[index]);
@@ -90,5 +112,27 @@ class _CatalogViewState extends State<CatalogView> {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       return const main.NavigationBar();
     }));
+  }
+
+  void filterSearchResults(String query) {
+    List<Company> dummySearchList = CompanyDao.readAll();
+    if (query.isNotEmpty) {
+      List<Company> dummyListData = <Company>[];
+      for (var item in dummySearchList) {
+        if (item.name.toLowerCase().contains(query.toLowerCase())) {
+          dummyListData.add(item);
+        }
+      }
+      setState(() {
+        _companies.clear();
+        _companies.addAll(dummyListData);
+      });
+      return;
+    } else {
+      setState(() {
+        _companies.clear();
+        _companies.addAll(CompanyDao.readAll());
+      });
+    }
   }
 }

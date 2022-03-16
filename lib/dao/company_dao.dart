@@ -5,22 +5,27 @@ import '../model/weather.dart';
 
 class CompanyDao {
 
-  static var companies;
+  static var companies = <Company>[];
 
-  static readAll() {
-
-    return companies;
+  static List<Company> readAll() {
+    List<Company> list = <Company>[];
+    list.addAll(companies);
+    return list;
   }
 
   static void uploadData() {
 
+    if (companies.isNotEmpty) {
+      return;
+    }
     var storageData = readFromStorage();
     for (Company company in storageData) {
       WeatherApiClient.getCurrentTemperature(company.location).then((value) {
         company.weather = value;
       });
     }
-    companies = storageData;
+    companies.clear();
+    companies.addAll(storageData);
   }
 
   static readFromStorage() {
