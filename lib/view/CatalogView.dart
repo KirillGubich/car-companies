@@ -109,6 +109,7 @@ class _CatalogViewState extends State<CatalogView> {
     AppProperties.mapCenter = location;
     AppProperties.mapZoom = 6;
     AppProperties.currentScreen = 1;
+    Navigator.of(context).pop();
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       return const main.NavigationBar();
     }));
