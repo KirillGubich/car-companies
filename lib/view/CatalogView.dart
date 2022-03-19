@@ -15,12 +15,20 @@ class CatalogView extends StatefulWidget {
 
 class _CatalogViewState extends State<CatalogView> {
   TextEditingController editingController = TextEditingController();
-  final _companies = <Company>[];
+  var _companies = <Company>[];
+
+  getCompanies() async {
+    CompanyDao.uploadData().then((value) {
+      setState(() {
+        _companies = value;
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    CompanyDao.uploadData();
+    getCompanies();
     AppProperties.updateProperties().then((data) {
       setState(() {});
     });
@@ -29,12 +37,12 @@ class _CatalogViewState extends State<CatalogView> {
   @override
   Widget build(BuildContext context) {
     Widget scaffoldBody;
-    if (AppProperties.fontSize == 0 || _companies.isEmpty) {
+    if (AppProperties.fontSize == 0 ||
+        _companies.isEmpty ||
+        !weatherUploaded()) {
       AppProperties.updateProperties();
-      CompanyDao.uploadData();
-      _companies.clear();
-      _companies.addAll(CompanyDao.readAll());
-      scaffoldBody = const Text("");
+      getCompanies();
+      scaffoldBody = const Center(child: Text("Loading..."));
     } else {
       scaffoldBody = _buildList();
     }
@@ -109,15 +117,15 @@ class _CatalogViewState extends State<CatalogView> {
     AppProperties.mapCenter = location;
     AppProperties.mapZoom = 6;
     AppProperties.currentScreen = 1;
-    Navigator.of(context).pop();
-    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute<void>(builder: (context) {
       return const main.NavigationBar();
     }));
   }
 
   void filterSearchResults(String query) {
     List<Company> dummySearchList = CompanyDao.readAll();
-    if (query.isNotEmpty) {
+    if (query.isNotEmpty && query.length >= 3) {
       List<Company> dummyListData = <Company>[];
       for (var item in dummySearchList) {
         if (item.name.toLowerCase().contains(query.toLowerCase())) {
@@ -135,5 +143,14 @@ class _CatalogViewState extends State<CatalogView> {
         _companies.addAll(CompanyDao.readAll());
       });
     }
+  }
+
+  bool weatherUploaded() {
+    for (var company in _companies) {
+      if (company.weather.type.isEmpty) {
+        return false;
+      }
+    }
+    return true;
   }
 }

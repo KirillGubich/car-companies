@@ -67,7 +67,7 @@ class _MapViewState extends State<MapView> {
 
   void filterSearchResults(String query) {
     List<Company> dummySearchList = CompanyDao.readAll();
-    if (query.isNotEmpty) {
+    if (query.isNotEmpty && query.length >= 3) {
       List<Company> dummyListData = <Company>[];
       for (var item in dummySearchList) {
         if (item.name.toLowerCase().contains(query.toLowerCase())) {

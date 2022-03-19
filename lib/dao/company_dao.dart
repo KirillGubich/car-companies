@@ -1,11 +1,12 @@
+import 'package:firebase_database/firebase_database.dart';
+
 import '../api/weather_api_client.dart';
 import '../model/company.dart';
-import '../model/location.dart';
-import '../model/weather.dart';
 
 class CompanyDao {
-
-  static var companies = <Company>[];
+  static final databaseRef = FirebaseDatabase.instance.ref();
+  static List<Company> companies = <Company>[];
+  static List<Company> storageData = <Company>[];
 
   static List<Company> readAll() {
     List<Company> list = <Company>[];
@@ -13,12 +14,11 @@ class CompanyDao {
     return list;
   }
 
-  static void uploadData() {
-
+  static Future<List<Company>> uploadData() async {
     if (companies.isNotEmpty) {
-      return;
+      return companies;
     }
-    var storageData = readFromStorage();
+    await readFromFirebase();
     for (Company company in storageData) {
       WeatherApiClient.getCurrentTemperature(company.location).then((value) {
         company.weather = value;
@@ -26,35 +26,23 @@ class CompanyDao {
     }
     companies.clear();
     companies.addAll(storageData);
+    return companies;
   }
 
-  static readFromStorage() {
-
-    return <Company>[
-      Company(
-          "Audi",
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/300px-Audi-Logo_2016.svg.png",
-          Weather(0, ""),
-          Location(48.45, 11.25)
-      ),
-      Company(
-          "BMW",
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/BMW_logo_%28gray%29.svg/1024px-BMW_logo_%28gray%29.svg.png",
-          Weather(0, ""),
-          Location(48.08, 11.34)
-      ),
-      Company(
-          "Peugeot",
-          "https://clipart-best.com/img/peugeot/peugeot-clip-art-40.png",
-          Weather(0, ""),
-          Location(48.50, 2.20)
-      ),
-      Company(
-          "Skoda",
-          "https://www.pngmart.com/files/10/Skoda-Logo-PNG-Clipart.png",
-          Weather(0, ""),
-          Location(50.24, 14.54)
-      ),
-    ];
+  static readFromFirebase() async {
+    databaseRef.once().then((event) {
+      final dataSnapshot = event.snapshot;
+      if (dataSnapshot.value != null) {
+        Map<String, dynamic> data = Map<String, dynamic>.from(
+            dataSnapshot.value as Map<dynamic, dynamic>);
+        var list = data['companies'];
+        storageData.clear();
+        for (var element in list) {
+          var company = Company.parse(element);
+          storageData.add(company);
+        }
+      }
+    });
+    return storageData;
   }
 }
