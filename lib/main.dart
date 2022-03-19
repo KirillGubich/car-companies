@@ -1,6 +1,7 @@
 import 'package:cars_catalog/model/app_properties.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,10 +14,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: "Car catalog",
-      home: NavigationBar(),
-    );
+    return MaterialApp(
+        title: "Car catalog",
+        home: AnimatedSplashScreen(
+            duration: 2000,
+            splash: const Text("Gubich & Shalyga, BSUIR 2022",
+                style: TextStyle(fontSize: 18)),
+            nextScreen: const NavigationBar(),
+            splashTransition: SplashTransition.fadeTransition,
+            backgroundColor: AppProperties.viewBackgroundColor));
   }
 }
 
