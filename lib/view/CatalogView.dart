@@ -15,12 +15,13 @@ class CatalogView extends StatefulWidget {
 
 class _CatalogViewState extends State<CatalogView> {
   TextEditingController editingController = TextEditingController();
-  var _companies = <Company>[];
+  final _companies = <Company>[];
 
   getCompanies() async {
     CompanyDao.uploadData().then((value) {
       setState(() {
-        _companies = value;
+        _companies.clear();
+        _companies.addAll(value);
       });
     });
   }
@@ -38,7 +39,7 @@ class _CatalogViewState extends State<CatalogView> {
   Widget build(BuildContext context) {
     Widget scaffoldBody;
     if (AppProperties.fontSize == 0 ||
-        _companies.isEmpty ||
+        CompanyDao.companies.isEmpty ||
         !weatherUploaded()) {
       AppProperties.updateProperties();
       getCompanies();
@@ -78,6 +79,10 @@ class _CatalogViewState extends State<CatalogView> {
   }
 
   Widget _buildList() {
+    if (_companies.isEmpty) {
+      return const Center(
+          child: Text("No results", style: TextStyle(fontSize: 18)));
+    }
     return ListView.builder(
         padding: const EdgeInsets.all(6),
         itemCount: _companies.length * 2 - 1,
