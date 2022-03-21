@@ -2,6 +2,7 @@ import 'package:cars_catalog/model/app_properties.dart';
 import 'package:cars_catalog/model/company.dart';
 import 'package:cars_catalog/model/location.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../dao/company_dao.dart';
 import '../main.dart' as main;
@@ -37,6 +38,12 @@ class _CatalogViewState extends State<CatalogView> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     Widget scaffoldBody;
     if (AppProperties.fontSize == 0 ||
         CompanyDao.companies.isEmpty ||

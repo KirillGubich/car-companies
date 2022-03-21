@@ -1,5 +1,6 @@
 import 'package:cars_catalog/dao/company_dao.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../model/app_properties.dart';
@@ -25,6 +26,13 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
